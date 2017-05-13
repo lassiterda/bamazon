@@ -101,7 +101,7 @@ const addNewProduct = function() {
     },
   ]).then(function(a) {
     return connection.queryAsync("INSERT INTO products SET ?",a).then(function(res) {
-      return "Success. " + a.produ + " are available for purchase."
+      return "Success. " + a.product_name + " are available for purchase."
     })
   })
 }

@@ -1,0 +1,32 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "simple CLI app simulating a store, with multiple permission roles",
+  "main": "bamazon.js",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "dotenv": "^4.0.0",
+    "inquirer": "^3.0.6",
+    "mysql": "^2.13.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node bamazon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lassiterda/bamazon.git"
+  },
+  "keywords": [
+    "CLI",
+    "Bluebird",
+    "node.js",
+    "MySQL"
+  ],
+  "author": "David Lassiter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lassiterda/bamazon/issues"
+  },
+  "homepage": "https://github.com/lassiterda/bamazon#readme"
+}

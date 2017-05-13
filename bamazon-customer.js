@@ -36,17 +36,18 @@ module.exports.shop = function() {
 
         connection.query("SELECT stock_quantity, price, id FROM products WHERE product_name = ?",selectionName,function(err, res) {
           if(err) throw err;
-          console.log(res[0].id);
           if (res[0].stock_quantity - parseInt(a.quantity) > 0) {
 
             connection.query("UPDATE products SET stock_quantity = ? WHERE id= ?",
               [res[0].stock_quantity - parseInt(a.quantity),res[0].id],function(){
                 if (err) throw err;
                 console.log("Success, your total is $" + parseInt(a.quantity) * res[0].price);
+                process.exit(0)
             })
           }
           else {
             console.log("Whoops, looks like we dont have enough " + selectionName + " right now.");
+            process.exit(0)
           }
         })
     })

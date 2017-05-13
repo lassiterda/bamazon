@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const manager = require('./bamazon-manager.js');
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
-Promise.promisifyAll(require("mysql/lib/Pool").prototype);;
+Promise.promisifyAll(require("mysql/lib/Pool").prototype);
 
 require('dotenv').config();
 
