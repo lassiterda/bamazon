@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const Promise = require("bluebird");
 const mysql = require('mysql');
+const manager = require('./bamazon-manager.js');
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);;
@@ -15,7 +16,7 @@ const connection = mysql.createConnection({
   database: "bamazon_db",
 });
 
-module.exports.authenticate = function() {
+const authenticate = function() {
   return inquirer.prompt([
     {
       name: "username",
@@ -32,7 +33,85 @@ module.exports.authenticate = function() {
       .then(function(res) {
         if( res.length > 0 ) {return res }
         else { console.log("username/password incorrect");
-          return user.authenticate()}
+          return authenticate()}
       })
   })
+};
+
+const promptAdmin = function(arrUser) {
+   inquirer.prompt([
+    {
+      name: "managerCmd",
+      type: "list",
+      message: "Select a function: ",
+      choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"],
+      when: function(i) {
+        return arrUser[0].userType === "manager"
+      }
+    },
+    {
+        name: "supervisorCmd",
+        type: "list",
+        message: "Select a function: ",
+        choices: ["View Product Sales by Department","Create New Department","Exit"],
+        when: function(i) {
+          return arrUser[0].userType === "supervisor"
+        }
+    }
+  ]).then(function(a) {
+      if(a.managerCmd) {
+        switch ( a.managerCmd) {
+          case "View Products for Sale":
+            manager.viewProducts().then((res) => {
+              console.log("");
+              res.forEach(function(ele) { console.log(ele)})
+              console.log("");
+              promptAdmin(arrUser);
+            })
+          break;
+          case "View Low Inventory":
+            manager.viewLowInventory().then((res) => {
+              console.log("Low Inventory:");
+              res.forEach(function(ele) { console.log(ele)})
+              console.log("");
+              promptAdmin(arrUser);
+            })
+          break;
+          case "Add to Inventory":
+            manager.addInventory().then((res) => {
+              console.log(res);
+              promptAdmin(arrUser)
+            })
+          break;
+          case "Add New Product":
+            manager.addNewProduct().then((res) => {
+              console.log(res);
+              promptAdmin(arrUser);
+            })
+          break;
+          case "Exit":
+            console.log(" \n Goodbye.");
+            process.exit(0);
+          break;
+          default:
+            console.log("\n Invalid Command, please try again.");
+            promptAdmin(arrUser);
+          break;
+        }
+      }
+      else if (a.supervisorCmd){
+        switch ( a.supervisorCmd) {
+
+        }
+      }
+      else {
+        console.log("Something went wrong...Please try again");
+        promptAdmin(arrUser);
+      }
+  })
+}
+
+module.exports = {
+  authenticate: authenticate,
+  promptAdmin: promptAdmin
 };

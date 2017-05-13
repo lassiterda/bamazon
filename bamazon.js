@@ -24,30 +24,7 @@ const appInit = function() {
       break;
 
       case "Login":
-        user.authenticate().then(function(res) {
-            return inquirer.prompt([
-              {
-                name: "managerCmd",
-                type: "list",
-                message: "Select a function: ",
-                choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"],
-                when: function(i) {
-                  return res[0].userType === "manager",
-                }
-              },
-              {
-                  name: "supervisorCmd",
-                  type: "list",
-                  message: "Select a function: ",
-                  choices: ["View Product Sales by Department","Create New Department"],
-                  when: function(i) {
-                    return res[0].userType === "supervisor"
-                  }
-              }
-            ]).then(function(a) {
-
-            })
-        });
+        user.authenticate().then(user.promptAdmin)
       break;
 
       default:
@@ -57,4 +34,4 @@ const appInit = function() {
   })
 }
 
-appInit(process.argv[2])
+appInit()
