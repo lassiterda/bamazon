@@ -13,19 +13,24 @@ const appInit = function() {
       name: "command",
       type: "list",
       message: "Welcome.  What would you like to do?",
-      choices:  ["Shop", "Login"]
+      choices:  ["Shop", "Login", "Exit"]
     }
   ]).then(function(a) {
 
     switch (a.command) {
 
       case "Shop":
-        customer.shop();
+        user.promptUser();
       break;
 
       case "Login":
         user.authenticate().then(user.promptAdmin)
       break;
+
+      case "Exit":
+        console.log(" \n Thanks for shopping, come again!");
+        process.exit(0);
+      break
 
       default:
         console.log("Valid commands are 'Shop' or 'Login'");

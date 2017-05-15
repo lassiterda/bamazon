@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const Promise = require("bluebird");
 const mysql = require('mysql');
 const manager = require('./bamazon-manager.js');
+const customer = require('./bamazon-customer.js');
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
@@ -111,7 +112,53 @@ const promptAdmin = function(arrUser) {
   })
 }
 
+const promptUser = function(objCust) {
+  //could also user a simple constcutor here, but its a very simple object a ton of data.
+  Cust = objCust ? objCust : { total: 0, transactions: [], cart: []};
+  inquirer.prompt([
+    {
+      name: "customerCmd",
+      type: "list",
+      message: "What would you like to do?",
+      choices: ["Shop", "View Cart", "Checkout", "Exit"]
+    }
+  ]).then(function(a) {
+    switch(a.customerCmd) {
+      case "Shop":
+        customer.shop(Cust).then(function(res) {
+          console.log(res.transactions[res.transactions.length - 1].message);
+          promptUser(res);
+        })
+      break;
+      case "View Cart":
+        //NOTE:  ViewCart does not return  modified version of the Customer's session object,
+        //       when calling promptUser, make sure to use the existing 'Cust' Object
+        customer.viewCart(Cust).then(function(res) {
+        console.log(res);
+        promptUser(Cust);
+        })
+      break;
+      case "Checkout":
+        customer.checkout(Cust).then(function(res) {
+
+        })
+      break;
+      case "Exit":
+        console.log(" \n Thanks for shopping, come again!");
+        process.exit(0);
+      break;
+      default:
+        console.log("Something went wrong...Please try again");
+        promptUser(Cust);
+      break;
+    }
+  })
+}
+
 module.exports = {
   authenticate: authenticate,
-  promptAdmin: promptAdmin
+  promptAdmin: promptAdmin,
+  promptUser: promptUser
 };
+
+promptUser();
