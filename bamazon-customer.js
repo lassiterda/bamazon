@@ -2,6 +2,9 @@
 const inquirer = require('inquirer');
 const Promise = require("bluebird");
 const mysql = require('mysql');
+
+// const questions = require('./questions.json');
+
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);;
@@ -15,8 +18,6 @@ const connection = mysql.createConnection({
   password: process.env.password,
   database: "bamazon_db",
 });
-
-// const questions = require('./questions.json');
 
 const shop = function(objCust) {
   return connection.queryAsync("SELECT id, product_name, price FROM products")
@@ -44,7 +45,7 @@ const shop = function(objCust) {
         return connection.queryAsync("SELECT stock_quantity, price, id FROM products WHERE id = ?",[a.selection.id]).then(function(res) {
           if (res[0].stock_quantity - a.quantity > 0) {
 
-            objCust.cart.push({ product: a.selection ,quantity: a.quantity })
+            objCust.cart.push({ product: a.selection, quantity: a.quantity })
             objCust.transactions.push(
               {status: 'success',
               message:  "Success, " + a.quantity + "x " + a.selection.product_name +  " ($" + a.quantity * a.selection.price + ") were added to your cart. \n",
@@ -67,7 +68,13 @@ const shop = function(objCust) {
   })
 }
 
+const viewCart = function(objCust) {
+  return "\n" + objCust.cart.map(function(ele) {
+    return "     " + ele.quantity +"x "  + ele.product.product_name + ", $" + ele.quantity * ele.product.price + "\n"
+  }).join("") + "     Total: $" + objCust.total + "\n"
+}
 
 module.exports = {
- shop: shop
+ shop: shop,
+ viewCart: viewCart
 }

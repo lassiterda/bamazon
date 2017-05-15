@@ -119,7 +119,7 @@ const promptUser = function(objCust) {
     {
       name: "customerCmd",
       type: "list",
-      message: "What would you like to do?",
+      message: "Select an Action: \n",
       choices: ["Shop", "View Cart", "Checkout", "Exit"]
     }
   ]).then(function(a) {
@@ -133,10 +133,8 @@ const promptUser = function(objCust) {
       case "View Cart":
         //NOTE:  ViewCart does not return  modified version of the Customer's session object,
         //       when calling promptUser, make sure to use the existing 'Cust' Object
-        customer.viewCart(Cust).then(function(res) {
-        console.log(res);
+        console.log(customer.viewCart(Cust));
         promptUser(Cust);
-        })
       break;
       case "Checkout":
         customer.checkout(Cust).then(function(res) {
@@ -160,5 +158,3 @@ module.exports = {
   promptAdmin: promptAdmin,
   promptUser: promptUser
 };
-
-promptUser();

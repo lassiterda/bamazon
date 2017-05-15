@@ -13,13 +13,13 @@ const appInit = function() {
       name: "command",
       type: "list",
       message: "Welcome.  What would you like to do?",
-      choices:  ["Shop", "Login", "Exit"]
+      choices:  ["Store", "Login", "Exit"]
     }
   ]).then(function(a) {
 
     switch (a.command) {
 
-      case "Shop":
+      case "Store":
         user.promptUser();
       break;
 
